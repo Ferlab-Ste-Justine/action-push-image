@@ -28,6 +28,11 @@ function getFullImageName () {
   core.setFailed('tag_source needs to be either \'sha\' or \'ref\'')
 }
 
+process.on('uncaughtException', function(err) {
+  core.setFailed('Uncaught exception occured!');
+});
+
+
 const fullImage = getFullImageName()
 
 runCmd(['docker', 'login', '-u', username, '-p', password], 'DOCKER LOGIN')
