@@ -1,0 +1,26 @@
+name: 'Push docker image'
+description: 'Login to docker hub'
+inputs:
+  username:
+    description: 'username to login with'
+    required: true
+  password:
+    description: 'password to login with'
+    required: true
+  image:
+    description: 'Repository of the image'
+    required: true
+  tag_source:
+    description: 'Value can sha or ref'
+    required: true
+  location:
+    description: 'Directory where the image is located'
+    required: true
+    default: 'image'
+  dockerfile:
+    description: 'Name of the image\'s Dockerfile'
+    required: true
+    default: 'Dockerfile'
+runs:
+  using: 'node14'
+  main: 'dist/index.js'
