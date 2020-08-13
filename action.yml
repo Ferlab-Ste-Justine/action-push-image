@@ -18,9 +18,9 @@ inputs:
     required: true
     default: 'image'
   dockerfile:
-    description: 'Name of the image\'s Dockerfile'
+    description: 'Name of the Dockerfile'
     required: true
     default: 'Dockerfile'
 runs:
-  using: 'node14'
+  using: 'node12'
   main: 'dist/index.js'
