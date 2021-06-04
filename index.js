@@ -35,6 +35,7 @@ process.on('uncaughtException', function (err) {
 })
 
 const fullImage = getFullImageName()
+core.info(`Pushing Image: ${fullImage}`)
 
 runCmd(['docker', 'login', '-u', username, '-p', password], 'DOCKER LOGIN')
 runCmd(['docker', 'build', '-t', fullImage, '-f', dockerfile, location], 'DOCKER BUILD')
