@@ -11,7 +11,7 @@ function runCmd (cmd, label = '') {
     console.log(result.stdout.toString())
   }
   if (result.stderr.length > 0) {
-    console.error(result.stderr.toString)
+    console.error(result.stderr.toString())
   }
 
   if (result.status > 0) {
