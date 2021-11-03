@@ -411,7 +411,7 @@ function runCmd (cmd, label = '', maxBuffer = DEFAULT_MAX_BUFFER) {
   if (label.length > 0) {
     core.info(label)
   }
-  const result = childProcess.spawnSync(cmd[0], cmd.slice(1), {"maxBuffer": maxBuffer})
+  const result = childProcess.spawnSync(cmd[0], cmd.slice(1), { maxBuffer: maxBuffer })
   if (result.stdout.length > 0) {
     core.info(result.stdout.toString())
   }
@@ -435,10 +435,11 @@ module.exports = runCmd
 const core = __webpack_require__(576)
 const runCmd = __webpack_require__(794)
 
+const server = core.getInput('server')
 const username = core.getInput('username')
 const password = core.getInput('password')
 const image = core.getInput('image')
-const tagSource = core.getInput('tag_source')
+const tagFormat = core.getInput('tag_format')
 const location = core.getInput('location')
 const dockerfile = core.getInput('dockerfile')
 
@@ -453,13 +454,11 @@ function getImageTagFromRef () {
 }
 
 function getFullImageName () {
-  if (tagSource === 'sha') {
-    return `${image}:${process.env.GITHUB_SHA}`
-  } else if (tagSource === 'ref') {
-    const imageTag = getImageTagFromRef()
-    return `${image}:${imageTag}`
-  }
-  core.setFailed('tag_source needs to be either \'sha\' or \'ref\'')
+  const commitSha = process.env.GITHUB_SHA
+  const timestamp = String(Math.round(Date.now() / 1000))
+  const semver = tagFormat.indexOf('{semver}') !== -1 ? getImageTagFromRef() : ''
+  const tag = tagFormat.replace('{semver}', semver).replace('{sha}', commitSha).replace('{timestamp}', timestamp)
+  return `${image}:${tag}`
 }
 
 process.on('uncaughtException', function (err) {
@@ -471,7 +470,7 @@ process.on('uncaughtException', function (err) {
 const fullImage = getFullImageName()
 core.info(`Pushing Image: ${fullImage}`)
 
-runCmd(['docker', 'login', '-u', username, '-p', password], 'DOCKER LOGIN')
+runCmd(['docker', 'login', '-u', username, '-p', password, server], 'DOCKER LOGIN')
 runCmd(['docker', 'build', '-t', fullImage, '-f', dockerfile, location], 'DOCKER BUILD')
 runCmd(['docker', 'push', fullImage], 'DOCKER PUSH')
 runCmd(['docker', 'logout'], 'DOCKER LOGOUT')

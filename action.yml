@@ -1,6 +1,10 @@
 name: 'Push docker image'
 description: 'Login to docker hub'
 inputs:
+  server:
+    description: 'Image server to logon to'
+    required: true
+    default: 'https://index.docker.io/v1/'
   username:
     description: 'username to login with'
     required: true
@@ -10,13 +14,13 @@ inputs:
   image:
     description: 'Repository of the image'
     required: true
-  tag_source:
-    description: 'Value can sha or ref'
+  tag_format:
+    description: 'Expected format of the tag'
     required: true
   location:
     description: 'Directory where the image is located'
     required: true
-    default: 'image'
+    default: '.'
   dockerfile:
     description: 'Name of the Dockerfile'
     required: true

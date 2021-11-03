@@ -1,10 +1,11 @@
 const core = require('@actions/core')
 const runCmd = require('./runCmd')
 
+const server = core.getInput('server')
 const username = core.getInput('username')
 const password = core.getInput('password')
 const image = core.getInput('image')
-const tagSource = core.getInput('tag_source')
+const tagFormat = core.getInput('tag_format')
 const location = core.getInput('location')
 const dockerfile = core.getInput('dockerfile')
 
@@ -19,13 +20,11 @@ function getImageTagFromRef () {
 }
 
 function getFullImageName () {
-  if (tagSource === 'sha') {
-    return `${image}:${process.env.GITHUB_SHA}`
-  } else if (tagSource === 'ref') {
-    const imageTag = getImageTagFromRef()
-    return `${image}:${imageTag}`
-  }
-  core.setFailed('tag_source needs to be either \'sha\' or \'ref\'')
+  const commitSha = process.env.GITHUB_SHA
+  const timestamp = String(Math.round(Date.now() / 1000))
+  const semver = tagFormat.indexOf('{semver}') !== -1 ? getImageTagFromRef() : ''
+  const tag = tagFormat.replace('{semver}', semver).replace('{sha}', commitSha).replace('{timestamp}', timestamp)
+  return `${image}:${tag}`
 }
 
 process.on('uncaughtException', function (err) {
@@ -37,7 +36,7 @@ process.on('uncaughtException', function (err) {
 const fullImage = getFullImageName()
 core.info(`Pushing Image: ${fullImage}`)
 
-runCmd(['docker', 'login', '-u', username, '-p', password], 'DOCKER LOGIN')
+runCmd(['docker', 'login', '-u', username, '-p', password, server], 'DOCKER LOGIN')
 runCmd(['docker', 'build', '-t', fullImage, '-f', dockerfile, location], 'DOCKER BUILD')
 runCmd(['docker', 'push', fullImage], 'DOCKER PUSH')
 runCmd(['docker', 'logout'], 'DOCKER LOGOUT')

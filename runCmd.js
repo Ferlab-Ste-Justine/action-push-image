@@ -8,7 +8,7 @@ function runCmd (cmd, label = '', maxBuffer = DEFAULT_MAX_BUFFER) {
   if (label.length > 0) {
     core.info(label)
   }
-  const result = childProcess.spawnSync(cmd[0], cmd.slice(1), {"maxBuffer": maxBuffer})
+  const result = childProcess.spawnSync(cmd[0], cmd.slice(1), { maxBuffer: maxBuffer })
   if (result.stdout.length > 0) {
     core.info(result.stdout.toString())
   }
