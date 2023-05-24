@@ -1,3 +1,4 @@
+---
 name: 'Push docker image'
 description: 'Login to docker hub'
 inputs:

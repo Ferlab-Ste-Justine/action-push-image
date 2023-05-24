@@ -10,5 +10,5 @@ The action takes the following inputs:
 - **password**: Password to use to login to the registry
 - **image**: Image repo (qualified by organization name and repo name) to use to push the image
 - **tag_format**: Format of the image tag. The following special strings will be replaced: "{semver}", "{sha}", "{timestamp}". They are placeholders for a tag following the **vx.y.z** semver format, the commit sha or the timestamp indicated as the number of seconds since epoch respectively
-- **location**: Location relative to the root of the repo where the dockerfile is. Defaults to '.' (ie, the root of the repo)
-- **dockerfile**: Name of the dockerfile. Defaults to 'Dockerfile'.
+- **location**: Location relative to the root of the repo for the build context (not for the dockerfile). Defaults to '.' (ie, the root of the repo)
+- **dockerfile**: Name of the dockerfile including its path. Defaults to 'Dockerfile'.
